@@ -1,0 +1,18 @@
+spring:
+  application:
+    name: digital-wallet-challenge
+  datasource:
+    url: jdbc:postgresql://localhost:5432/digital-wallet
+    username: admin
+    password: pass
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+
+server:
+  port: 8084
+
