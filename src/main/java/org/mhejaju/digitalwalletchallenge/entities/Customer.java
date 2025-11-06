@@ -22,6 +22,6 @@ public class Customer {
     private int trIdentityNo;
 
     @OneToMany(mappedBy = "customer", fetch = FetchType.LAZY
-            ,cascade = CascadeType.ALL, targetEntity = Wallet.class)
+            ,cascade = CascadeType.PERSIST, targetEntity = Wallet.class)
     private Set<Wallet> wallets;
 }

@@ -14,21 +14,23 @@ public class Wallet {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
+    @Column(unique = true)
+    private String walletName;
+
     @ManyToOne
     @JoinColumn(name = "customer_id", referencedColumnName = "customer_id")
     private Customer customer;
 
+    @Enumerated(EnumType.STRING)
+    @Column(length = 10, nullable = false)
     private Currency currency;
 
-    @Column(name = "active_for_withdraw")
     private boolean activeForWithdraw;
 
-    @Column(name = "active_for_shopping")
     private boolean activeForShopping;
 
     private BigDecimal balance;
 
-    @Column(name = "usable_balance")
     private BigDecimal usableBalance;
 
 
