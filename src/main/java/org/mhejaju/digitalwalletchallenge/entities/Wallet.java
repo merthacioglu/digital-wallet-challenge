@@ -5,6 +5,7 @@ import lombok.Data;
 import org.mhejaju.digitalwalletchallenge.entities.enums.Currency;
 
 import java.math.BigDecimal;
+import java.util.UUID;
 
 @Data
 @Entity
@@ -13,6 +14,9 @@ public class Wallet {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
+
+    @Column(unique = true, nullable = false, updatable = false)
+    private String walletId;
 
     @Column(unique = true)
     private String walletName;
@@ -32,6 +36,13 @@ public class Wallet {
     private BigDecimal balance;
 
     private BigDecimal usableBalance;
+
+    @PrePersist
+    private void generateWalletId() {
+        if (this.walletId == null) {
+            this.walletId = UUID.randomUUID().toString();
+        }
+    }
 
 
 }

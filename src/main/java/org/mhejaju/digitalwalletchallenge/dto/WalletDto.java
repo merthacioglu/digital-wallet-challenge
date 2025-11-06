@@ -8,8 +8,8 @@ import org.mhejaju.digitalwalletchallenge.constants.ValidationMessages;
 import org.mhejaju.digitalwalletchallenge.entities.enums.Currency;
 
 public record WalletDto(
-        @Size(min = 2, max = 50, message = ValidationMessages.WALLET_NAME_SIZE_ERROR)
-        @NotEmpty(message = ValidationMessages.WALLET_NAME_REQUIRED_ERROR)
+        @Size(min = 2, max = 50, message = ValidationMessages.NAME_SIZE_MISMATCH)
+        @NotEmpty(message = ValidationMessages.NAME_REQUIRED)
         String walletName,
 
         @NotNull(message = ValidationMessages.INCORRECT_CURRENCY_ERROR)
