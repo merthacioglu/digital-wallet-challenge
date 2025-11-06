@@ -2,6 +2,7 @@ package org.mhejaju.digitalwalletchallenge.services.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.mhejaju.digitalwalletchallenge.dto.WalletDto;
+import org.mhejaju.digitalwalletchallenge.entities.Customer;
 import org.mhejaju.digitalwalletchallenge.entities.Wallet;
 import org.mhejaju.digitalwalletchallenge.repositories.WalletRepository;
 import org.mhejaju.digitalwalletchallenge.services.WalletService;
@@ -15,9 +16,9 @@ public class WalletServiceImpl implements WalletService {
     private final WalletRepository walletRepository;
 
     @Override
-    public void addWallet(WalletDto walletDto) {
+    public void addWallet(WalletDto walletDto, Customer customer) {
         Wallet wallet = WalletMapper.mapToWallet(walletDto);
-
+        wallet.setCustomer(customer);
         walletRepository.save(wallet);
 
     }

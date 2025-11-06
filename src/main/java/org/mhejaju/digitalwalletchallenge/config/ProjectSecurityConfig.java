@@ -32,7 +32,7 @@ public class ProjectSecurityConfig {
                                 "/api/v1/login"
 
                         ).permitAll()
-                        .requestMatchers("/api/v1/**").hasAnyRole(Role.BASIC.name(), Role.ADMIN.name())
+                        .requestMatchers("/api/v1/wallets").hasAnyRole(Role.BASIC.name(), Role.ADMIN.name())
                         .requestMatchers("/api/v1/admin/**").hasRole(Role.ADMIN.name())
                         .anyRequest().authenticated())
                 .authenticationProvider(authenticationProvider)

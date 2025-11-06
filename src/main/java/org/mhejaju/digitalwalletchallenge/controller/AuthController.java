@@ -3,6 +3,7 @@ package org.mhejaju.digitalwalletchallenge.controller;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.mhejaju.digitalwalletchallenge.dto.AuthenticationDto;
+import org.mhejaju.digitalwalletchallenge.dto.LoginDto;
 import org.mhejaju.digitalwalletchallenge.dto.RegisterDto;
 import org.mhejaju.digitalwalletchallenge.services.AuthenticationService;
 import org.springframework.http.HttpStatus;
@@ -24,6 +25,14 @@ public class AuthController {
     @PostMapping("/register")
     public ResponseEntity<AuthenticationDto> register(@RequestBody @Valid RegisterDto registerDto) {
         AuthenticationDto res = authenticationService.register(registerDto);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(res);
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<AuthenticationDto> login(@RequestBody @Valid LoginDto loginDto) {
+        AuthenticationDto res = authenticationService.authenticate(loginDto);
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(res);
