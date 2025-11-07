@@ -5,16 +5,16 @@ import lombok.RequiredArgsConstructor;
 import org.mhejaju.digitalwalletchallenge.constants.ResponseMessages;
 import org.mhejaju.digitalwalletchallenge.dto.ResponseDto;
 import org.mhejaju.digitalwalletchallenge.dto.WalletDto;
+import org.mhejaju.digitalwalletchallenge.dto.WalletResponseDto;
 import org.mhejaju.digitalwalletchallenge.entities.Customer;
 import org.mhejaju.digitalwalletchallenge.services.WalletService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 
 @RequestMapping("/api/v1/wallets")
@@ -32,6 +32,13 @@ public class WalletController {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(new ResponseDto(HttpStatus.CREATED.value(), ResponseMessages.WALLET_CREATION_SUCCESS_MESSAGE));
+    }
+
+    @GetMapping
+    public ResponseEntity<List<WalletResponseDto>> listWallets(@AuthenticationPrincipal Customer customer) {
+        List<WalletResponseDto> wallets = walletService.listWallets(customer);
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(wallets);
     }
 
 

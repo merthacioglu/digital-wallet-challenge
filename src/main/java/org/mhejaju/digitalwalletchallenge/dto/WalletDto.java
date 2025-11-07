@@ -3,9 +3,9 @@ package org.mhejaju.digitalwalletchallenge.dto;
 
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import org.mhejaju.digitalwalletchallenge.constants.ValidationMessages;
-import org.mhejaju.digitalwalletchallenge.entities.enums.Currency;
 
 public record WalletDto(
         @Size(min = 2, max = 50, message = ValidationMessages.NAME_SIZE_MISMATCH)
@@ -13,7 +13,8 @@ public record WalletDto(
         String walletName,
 
         @NotNull(message = ValidationMessages.INCORRECT_CURRENCY_ERROR)
-        Currency currency,
+        @Pattern(regexp = "^(USD|TRY|EUR)$", message = ValidationMessages.INCORRECT_CURRENCY_ERROR) //TODO: find a generic solution against new currencies to be added
+        String currency,
         boolean activeForShopping,
         boolean activeForWithdraw
 ) {
