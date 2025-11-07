@@ -1,8 +1,8 @@
 package org.mhejaju.digitalwalletchallenge.filter;
 
 import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.MalformedJwtException;
-import io.jsonwebtoken.security.SignatureException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -30,7 +30,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(@NonNull HttpServletRequest request,
                                     @NonNull HttpServletResponse response,
-                                    @NonNull FilterChain filterChain) throws ServletException, IOException {
+                                    @NonNull FilterChain filterChain) throws IOException {
         try {
             final String authHeader = request.getHeader("Authorization");
             final String jwt;
@@ -60,11 +60,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
             filterChain.doFilter(request, response);
 
-        } catch (ExpiredJwtException ex) {
-            handleJwtException(response, ex.getMessage(), HttpServletResponse.SC_UNAUTHORIZED);
-        } catch (MalformedJwtException ex) {
-            handleJwtException(response, ex.getMessage(), HttpServletResponse.SC_UNAUTHORIZED);
-        } catch (Exception ex) {
+        } catch (JwtException | ServletException ex) {
             handleJwtException(response, ex.getMessage(), HttpServletResponse.SC_UNAUTHORIZED);
         }
     }

@@ -1,6 +1,5 @@
 package org.mhejaju.digitalwalletchallenge.exceptions;
 
-import io.jsonwebtoken.ExpiredJwtException;
 import org.hibernate.exception.ConstraintViolationException;
 import org.mhejaju.digitalwalletchallenge.dto.ErrorDto;
 import org.springframework.http.HttpStatus;
