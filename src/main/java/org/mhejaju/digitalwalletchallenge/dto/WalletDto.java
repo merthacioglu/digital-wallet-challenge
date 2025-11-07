@@ -12,7 +12,7 @@ public record WalletDto(
         @NotEmpty(message = ValidationMessages.NAME_REQUIRED)
         String walletName,
 
-        @NotNull(message = ValidationMessages.INCORRECT_CURRENCY_ERROR)
+        @NotNull(message = ValidationMessages.CURRENCY_REQUIRED)
         @Pattern(regexp = "^(USD|TRY|EUR)$", message = ValidationMessages.INCORRECT_CURRENCY_ERROR) //TODO: find a generic solution against new currencies to be added
         String currency,
         boolean activeForShopping,

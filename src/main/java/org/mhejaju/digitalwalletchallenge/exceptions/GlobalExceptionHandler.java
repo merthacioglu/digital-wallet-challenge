@@ -87,6 +87,31 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(errorResponseDTO, HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(WalletNotFoundException.class)
+    public ResponseEntity<ErrorDto> handleResourceNotFoundException(WalletNotFoundException ex,
+                                                                          WebRequest req) {
+        ErrorDto errorResponseDTO = new ErrorDto(
+                req.getDescription(false),
+                HttpStatus.NOT_FOUND.value(),
+                ex.getMessage(),
+                LocalDateTime.now()
+        );
+        return new ResponseEntity<>(errorResponseDTO, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(RuntimeException.class)
+    public ResponseEntity<ErrorDto> handleGlobalException(Exception exception,
+                                                                  WebRequest webRequest) {
+        ErrorDto errorResponseDTO = new ErrorDto(
+                webRequest.getDescription(false),
+                HttpStatus.BAD_REQUEST.value(),
+                exception.getMessage(),
+                LocalDateTime.now()
+        );
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(errorResponseDTO);
+    }
+
 
 
 

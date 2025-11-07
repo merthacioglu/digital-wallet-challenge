@@ -1,4 +1,4 @@
-package org.mhejaju.digitalwalletchallenge.services;
+package org.mhejaju.digitalwalletchallenge.services.impl;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;

@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.mhejaju.digitalwalletchallenge.dto.AuthenticationDto;
 import org.mhejaju.digitalwalletchallenge.dto.LoginDto;
 import org.mhejaju.digitalwalletchallenge.dto.RegisterDto;
-import org.mhejaju.digitalwalletchallenge.services.AuthenticationService;
+import org.mhejaju.digitalwalletchallenge.services.impl.AuthenticationService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;

@@ -29,10 +29,12 @@ public class ProjectSecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(request -> request.requestMatchers(
                                 "/api/v1/register",
-                                "/api/v1/login"
+                                "/api/v1/login",
+                                "/api/v1/deposit"
 
                         ).permitAll()
                         .requestMatchers("/api/v1/wallets").hasAnyRole(Role.BASIC.name(), Role.ADMIN.name())
+                        //.requestMatchers("/api/v1/deposit").hasAnyRole(Role.BASIC.name(), Role.ADMIN.name())
                         .requestMatchers("/api/v1/admin/**").hasRole(Role.ADMIN.name())
                         .anyRequest().authenticated())
                 .authenticationProvider(authenticationProvider)

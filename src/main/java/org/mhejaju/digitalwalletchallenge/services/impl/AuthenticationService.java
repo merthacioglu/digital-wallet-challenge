@@ -1,4 +1,4 @@
-package org.mhejaju.digitalwalletchallenge.services;
+package org.mhejaju.digitalwalletchallenge.services.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.mhejaju.digitalwalletchallenge.dto.AuthenticationDto;

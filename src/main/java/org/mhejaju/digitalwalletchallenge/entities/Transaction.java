@@ -7,6 +7,9 @@ import org.mhejaju.digitalwalletchallenge.entities.enums.Status;
 import org.mhejaju.digitalwalletchallenge.entities.enums.TransactionType;
 
 import java.math.BigDecimal;
+import java.security.SecureRandom;
+
+import static org.mhejaju.digitalwalletchallenge.constants.Miscellaneous.ALPHANUMERIC;
 
 @Data
 @Entity
@@ -34,11 +37,30 @@ public class Transaction {
     private String oppositeParty;
 
     @ManyToOne
-    @JoinColumn(name = "wallet_id", referencedColumnName = "id")
+    @JoinColumn(name = "wallet_id", referencedColumnName = "id") // TODO: problem
     private Wallet wallet;
 
     @Column(nullable = false)
     private BigDecimal amount;
+
+    @PrePersist
+    private void generateTransactionId() {
+        if (this.transactionId == null) {
+            this.transactionId = generateUniqueTransactionId();
+        }
+    }
+
+
+    private static final SecureRandom RANDOM = new SecureRandom();
+    private static final int TRANSACTION_ID_LENGTH = 12;
+
+    private String generateUniqueTransactionId() {
+        StringBuilder sb = new StringBuilder(TRANSACTION_ID_LENGTH);
+        for (int i = 0; i < TRANSACTION_ID_LENGTH; i++) {
+            sb.append(ALPHANUMERIC.charAt(RANDOM.nextInt(ALPHANUMERIC.length())));
+        }
+        return sb.toString();
+    }
 
 
 
