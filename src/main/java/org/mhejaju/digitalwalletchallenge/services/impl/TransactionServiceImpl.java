@@ -4,10 +4,13 @@ import lombok.RequiredArgsConstructor;
 import org.mhejaju.digitalwalletchallenge.dto.DepositDto;
 import org.mhejaju.digitalwalletchallenge.dto.TransactionResponseDto;
 import org.mhejaju.digitalwalletchallenge.dto.WalletTransactionListResponseDto;
+import org.mhejaju.digitalwalletchallenge.dto.WithdrawDto;
 import org.mhejaju.digitalwalletchallenge.entities.Customer;
 import org.mhejaju.digitalwalletchallenge.entities.Transaction;
 import org.mhejaju.digitalwalletchallenge.entities.Wallet;
 import org.mhejaju.digitalwalletchallenge.entities.enums.Status;
+import org.mhejaju.digitalwalletchallenge.exceptions.InsufficientFundsException;
+import org.mhejaju.digitalwalletchallenge.exceptions.WalletNotAvailableException;
 import org.mhejaju.digitalwalletchallenge.exceptions.WalletNotFoundException;
 import org.mhejaju.digitalwalletchallenge.mapper.TransactionMapper;
 import org.mhejaju.digitalwalletchallenge.repositories.TransactionRepository;
@@ -55,6 +58,48 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
     @Override
+    @Transactional
+    public TransactionResponseDto withdraw(WithdrawDto withdrawDto, Customer customer) {
+        List<Wallet> wallets = walletRepository.findByCustomerId(customer.getId());
+        Wallet targetWallet = wallets.stream().filter(w -> w.getWalletId().equals(withdrawDto.walletId()))
+                .findAny().orElseThrow(() -> new WalletNotFoundException(customer.getTrIdentityNo(), withdrawDto.walletId()));
+
+        if (!targetWallet.isActiveForWithdraw()) {
+            throw new WalletNotAvailableException(targetWallet.getWalletId(), "Withdraw");
+        }
+
+        if (!targetWallet.isActiveForShopping()) {
+            throw new WalletNotAvailableException(targetWallet.getWalletId(), "Shopping");
+        }
+
+        if (targetWallet.getUsableBalance().compareTo(withdrawDto.amount()) < 0) {
+            throw new InsufficientFundsException("Not enough funds available in the wallet");
+        }
+
+        targetWallet.setUsableBalance(targetWallet.getUsableBalance().subtract(withdrawDto.amount()));
+        Transaction transaction = TransactionMapper.mapToTransaction(withdrawDto);
+        transaction.setWallet(targetWallet);
+
+        if (withdrawDto.amount().compareTo(BigDecimal.valueOf(1000.0)) < 0) {
+            targetWallet.setBalance(targetWallet.getBalance().subtract(withdrawDto.amount()));
+            transaction.setStatus(Status.APPROVED);
+        } else {
+            transaction.setStatus(Status.PENDING);
+        }
+
+        transactionRepository.save(transaction);
+        return TransactionResponseDto.builder()
+                .walletId(targetWallet.getWalletId())
+                .oppositeParty(transaction.getOppositeParty())
+                .oppositePartyType(transaction.getOppositeParty())
+                .type(transaction.getType().name())
+                .status(transaction.getStatus().name())
+                .amount(transaction.getAmount())
+                .build();
+
+    }
+
+    @Override
     public WalletTransactionListResponseDto getTransactions(Customer customer, String walletId) {
         List<Wallet> wallets = walletRepository.findByCustomerId(customer.getId());
         Wallet targetWallet = wallets.stream().filter(w -> w.getWalletId().equals(walletId))
@@ -78,6 +123,7 @@ public class TransactionServiceImpl implements TransactionService {
                 .build();
 
     }
+
 
 
 }

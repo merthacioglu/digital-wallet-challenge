@@ -99,6 +99,18 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(errorResponseDTO, HttpStatus.NOT_FOUND);
     }
 
+    @ExceptionHandler(WalletNotAvailableException.class)
+    public ResponseEntity<ErrorDto> handleWalletNotAvailableException(WalletNotAvailableException ex,
+                                                                    WebRequest req) {
+        ErrorDto errorResponseDTO = new ErrorDto(
+                req.getDescription(false),
+                HttpStatus.BAD_REQUEST.value(),
+                ex.getMessage(),
+                LocalDateTime.now()
+        );
+        return new ResponseEntity<>(errorResponseDTO, HttpStatus.BAD_REQUEST);
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorDto> handleGlobalException(Exception exception,
                                                                   WebRequest webRequest) {

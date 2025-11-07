@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.mhejaju.digitalwalletchallenge.dto.DepositDto;
 import org.mhejaju.digitalwalletchallenge.dto.TransactionResponseDto;
 import org.mhejaju.digitalwalletchallenge.dto.WalletTransactionListResponseDto;
+import org.mhejaju.digitalwalletchallenge.dto.WithdrawDto;
 import org.mhejaju.digitalwalletchallenge.entities.Customer;
 import org.mhejaju.digitalwalletchallenge.services.TransactionService;
 import org.springframework.http.HttpStatus;
@@ -32,6 +33,19 @@ public class TransactionController {
                 .body(res);
     }
 
+    @PostMapping("/withdraw")
+    public ResponseEntity<TransactionResponseDto> withdraw(
+            @RequestBody @Valid WithdrawDto withdrawDto,
+            @AuthenticationPrincipal Customer customer
+            ) {
+
+        TransactionResponseDto res = transactionService.withdraw(withdrawDto, customer);
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(res);
+    }
+
     @GetMapping("/transactions")
     public ResponseEntity<WalletTransactionListResponseDto> getTransactions(
             @AuthenticationPrincipal Customer customer,
@@ -46,4 +60,6 @@ public class TransactionController {
                 .status(HttpStatus.OK)
                 .body(res);
     }
+
+
 }
