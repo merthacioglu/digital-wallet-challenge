@@ -5,6 +5,7 @@ import lombok.Data;
 import org.mhejaju.digitalwalletchallenge.entities.enums.Currency;
 
 import java.math.BigDecimal;
+import java.util.Set;
 import java.util.UUID;
 
 @Data
@@ -24,6 +25,10 @@ public class Wallet {
     @ManyToOne
     @JoinColumn(name = "customer_id", referencedColumnName = "customer_id")
     private Customer customer;
+
+    @OneToMany(mappedBy = "wallet", fetch = FetchType.LAZY,
+    cascade = CascadeType.PERSIST, targetEntity = Transaction.class)
+    private Set<Transaction> transactions;
 
     @Enumerated(EnumType.STRING)
     @Column(length = 10, nullable = false)
