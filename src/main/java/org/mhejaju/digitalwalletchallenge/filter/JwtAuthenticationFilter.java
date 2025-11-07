@@ -1,8 +1,6 @@
 package org.mhejaju.digitalwalletchallenge.filter;
 
-import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
-import io.jsonwebtoken.MalformedJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -10,6 +8,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.mhejaju.digitalwalletchallenge.services.JwtService;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -61,12 +60,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             filterChain.doFilter(request, response);
 
         } catch (JwtException | ServletException ex) {
-            handleJwtException(response, ex.getMessage(), HttpServletResponse.SC_UNAUTHORIZED);
+            handleJwtException(response, ex.getMessage());
         }
     }
 
-    private void handleJwtException(HttpServletResponse response, String message, int status) throws IOException {
-        response.setStatus(status);
+    private void handleJwtException(HttpServletResponse response, String message) throws IOException {
+        response.setStatus(HttpStatus.UNAUTHORIZED.value());
         response.setContentType("application/json");
         response.getWriter().write(String.format("{\"error\": \"%s\"}", message));
     }
