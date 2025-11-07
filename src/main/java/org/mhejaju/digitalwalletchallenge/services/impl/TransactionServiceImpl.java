@@ -3,6 +3,7 @@ package org.mhejaju.digitalwalletchallenge.services.impl;
 import lombok.RequiredArgsConstructor;
 import org.mhejaju.digitalwalletchallenge.dto.DepositDto;
 import org.mhejaju.digitalwalletchallenge.dto.TransactionResponseDto;
+import org.mhejaju.digitalwalletchallenge.dto.WalletTransactionListResponseDto;
 import org.mhejaju.digitalwalletchallenge.entities.Customer;
 import org.mhejaju.digitalwalletchallenge.entities.Transaction;
 import org.mhejaju.digitalwalletchallenge.entities.Wallet;
@@ -52,4 +53,31 @@ public class TransactionServiceImpl implements TransactionService {
                 .amount(transaction.getAmount())
                 .build();
     }
+
+    @Override
+    public WalletTransactionListResponseDto getTransactions(Customer customer, String walletId) {
+        List<Wallet> wallets = walletRepository.findByCustomerId(customer.getId());
+        Wallet targetWallet = wallets.stream().filter(w -> w.getWalletId().equals(walletId))
+                .findAny().orElseThrow(() -> new WalletNotFoundException(customer.getTrIdentityNo(), walletId));
+
+        List<TransactionResponseDto> transactions = transactionRepository.findByWalletId(targetWallet.getId())
+                .stream().map(transaction -> TransactionResponseDto.builder()
+                        .walletId(transaction.getWallet().getWalletId())
+                        .oppositeParty(transaction.getOppositeParty())
+                        .oppositePartyType(transaction.getOppositePartyType().name())
+                        .type(transaction.getType().name())
+                        .status(transaction.getStatus().name())
+                        .amount(transaction.getAmount())
+                        .build()).toList();
+
+        return WalletTransactionListResponseDto.builder()
+                .balance(targetWallet.getBalance())
+                .usableBalance(targetWallet.getUsableBalance())
+                .walletName(targetWallet.getWalletName())
+                .transactions(transactions)
+                .build();
+
+    }
+
+
 }

@@ -37,7 +37,7 @@ public class Transaction {
     private String oppositeParty;
 
     @ManyToOne
-    @JoinColumn(name = "wallet_id", referencedColumnName = "id") // TODO: problem
+    @JoinColumn(name = "wallet_id", referencedColumnName = "id")
     private Wallet wallet;
 
     @Column(nullable = false)

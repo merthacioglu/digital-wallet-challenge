@@ -99,7 +99,7 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(errorResponseDTO, HttpStatus.NOT_FOUND);
     }
 
-    @ExceptionHandler(RuntimeException.class)
+    @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorDto> handleGlobalException(Exception exception,
                                                                   WebRequest webRequest) {
         ErrorDto errorResponseDTO = new ErrorDto(
@@ -111,6 +111,8 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(errorResponseDTO);
     }
+
+
 
 
 
