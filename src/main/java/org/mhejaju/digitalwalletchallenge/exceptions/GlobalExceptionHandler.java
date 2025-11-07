@@ -1,9 +1,11 @@
 package org.mhejaju.digitalwalletchallenge.exceptions;
 
+import io.jsonwebtoken.ExpiredJwtException;
 import org.hibernate.exception.ConstraintViolationException;
 import org.mhejaju.digitalwalletchallenge.dto.ErrorDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -60,4 +62,20 @@ public class GlobalExceptionHandler {
         );
         return new ResponseEntity<>(errorResponseDTO, HttpStatus.NOT_FOUND);
     }
+
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity<ErrorDto> handleBadCredentialsException(BadCredentialsException ex,
+                                                                    WebRequest req) {
+        ErrorDto errorResponseDTO = new ErrorDto(
+                req.getDescription(false),
+                HttpStatus.UNAUTHORIZED.value(),
+                "Email address or password is incorrect",
+                LocalDateTime.now()
+        );
+        return new ResponseEntity<>(errorResponseDTO, HttpStatus.UNAUTHORIZED);
+    }
+
+
+
+
 }

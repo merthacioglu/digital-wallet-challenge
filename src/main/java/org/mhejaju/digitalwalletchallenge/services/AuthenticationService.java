@@ -9,6 +9,7 @@ import org.mhejaju.digitalwalletchallenge.exceptions.ResourceNotFoundException;
 import org.mhejaju.digitalwalletchallenge.mapper.CustomerMapper;
 import org.mhejaju.digitalwalletchallenge.repositories.CustomerRepository;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -38,7 +39,7 @@ public class AuthenticationService {
                 new UsernamePasswordAuthenticationToken(loginDto.email(), loginDto.password())
         );
         var user = customerRepository.findByEmail(loginDto.email()).orElseThrow(() ->
-                new ResourceNotFoundException("Customer", "Email", loginDto.email()));
+                new BadCredentialsException("Email or password is incorrect"));
 
         var jwtToken = jwtService.generateToken(user);
         var refreshToken = jwtService.generateRefresh(new HashMap<>(), user);
