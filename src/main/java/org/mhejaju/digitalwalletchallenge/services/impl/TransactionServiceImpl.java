@@ -7,11 +7,9 @@ import org.mhejaju.digitalwalletchallenge.entities.Transaction;
 import org.mhejaju.digitalwalletchallenge.entities.Wallet;
 import org.mhejaju.digitalwalletchallenge.entities.enums.TransactionStatus;
 import org.mhejaju.digitalwalletchallenge.entities.enums.TransactionType;
-import org.mhejaju.digitalwalletchallenge.exceptions.InsufficientFundsException;
-import org.mhejaju.digitalwalletchallenge.exceptions.TransactionNotFoundException;
-import org.mhejaju.digitalwalletchallenge.exceptions.WalletNotAvailableException;
-import org.mhejaju.digitalwalletchallenge.exceptions.WalletNotFoundException;
+import org.mhejaju.digitalwalletchallenge.exceptions.*;
 import org.mhejaju.digitalwalletchallenge.mapper.TransactionMapper;
+import org.mhejaju.digitalwalletchallenge.repositories.CustomerRepository;
 import org.mhejaju.digitalwalletchallenge.repositories.TransactionRepository;
 import org.mhejaju.digitalwalletchallenge.repositories.WalletRepository;
 import org.mhejaju.digitalwalletchallenge.services.TransactionService;
@@ -28,6 +26,7 @@ public class TransactionServiceImpl implements TransactionService {
 
     private final WalletRepository walletRepository;
     private final TransactionRepository transactionRepository;
+    private final CustomerRepository customerRepository;
 
     @Override
     @Transactional
@@ -58,6 +57,16 @@ public class TransactionServiceImpl implements TransactionService {
                 .status(transaction.getStatus().name())
                 .amount(transaction.getAmount())
                 .build();
+    }
+
+    @Transactional
+    @Override
+    public TransactionResponseDto makeDeposit(DepositDto depositDto, String customerTrIdentityNo) {
+        Optional<Customer> optionalCustomer = customerRepository.findByTrIdentityNo(customerTrIdentityNo);
+        Customer customer = optionalCustomer.orElseThrow(() ->
+                new CustomerNotFoundException(customerTrIdentityNo));
+
+        return makeDeposit(depositDto, customer);
     }
 
     @Override

@@ -31,6 +31,16 @@ public class TransactionController {
                 .body(res);
     }
 
+    @PostMapping("/admin/deposit")
+    public ResponseEntity<TransactionResponseDto> makeDeposit(@RequestBody @Valid DepositDto depositDto,
+                                                              String customerTrIdentityNo) {
+
+        TransactionResponseDto res = transactionService.makeDeposit(depositDto, customerTrIdentityNo);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(res);
+    }
+
     @PostMapping("/withdraw")
     public ResponseEntity<TransactionResponseDto> withdraw(
             @RequestBody @Valid WithdrawDto withdrawDto,
