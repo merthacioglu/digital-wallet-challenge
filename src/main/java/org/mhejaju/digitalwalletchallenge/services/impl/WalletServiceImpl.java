@@ -42,11 +42,18 @@ public class WalletServiceImpl implements WalletService {
 
 
     @Override
-    @Transactional(readOnly = true)
     public List<WalletResponseDto> listWallets(Customer customer) {
         List<Wallet> wallets = walletRepository.findByCustomerId(customer.getId());
         return wallets.stream()
                 .map(WalletMapper::mapToWalletResponseDto)
                 .toList();
+    }
+
+    @Override
+    public List<WalletResponseDto> listWallets(String customerTrIdentityNo) {
+        Optional<Customer> optionalCustomer = customerRepository.findByTrIdentityNo(customerTrIdentityNo);
+        Customer customer = optionalCustomer.orElseThrow(() ->
+                new CustomerNotFoundException(customerTrIdentityNo));
+        return listWallets(customer);
     }
 }

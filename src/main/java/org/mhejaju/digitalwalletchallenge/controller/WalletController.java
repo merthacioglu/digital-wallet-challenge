@@ -39,9 +39,9 @@ public class WalletController {
 
     @GetMapping("/listWallets")
     public ResponseEntity<List<WalletResponseDto>> listWallets(@AuthenticationPrincipal Customer customer) {
-        List<WalletResponseDto> wallets = walletService.listWallets(customer);
+        List<WalletResponseDto> res = walletService.listWallets(customer);
         return ResponseEntity.status(HttpStatus.OK)
-                .body(wallets);
+                .body(res);
     }
 
     @PostMapping("/admin/addWallet")
@@ -55,6 +55,17 @@ public class WalletController {
         walletService.addWallet(customerTrIdentityNo, walletDto);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(new ResponseDto(HttpStatus.CREATED.value(), ResponseMessages.WALLET_CREATION_SUCCESS_MESSAGE));
+    }
+
+    @GetMapping("/admin/listWallets")
+    public ResponseEntity<List<WalletResponseDto>> listWallets(
+            @RequestParam
+            @Pattern(regexp = Regex.TR_IDENTITY_NO_REGEX, message = ValidationMessages.TR_IDENTITY_NO_FORMAT_ERROR)
+            String customerTrIdentityNo
+    ) {
+        List<WalletResponseDto> res = walletService.listWallets(customerTrIdentityNo);
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(res);
     }
 
 
