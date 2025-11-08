@@ -9,5 +9,6 @@ import java.util.List;
 
 public interface WalletService {
     void addWallet(WalletDto walletDto, Customer customer);
+    void addWallet(String customerTrIdentityNo, WalletDto walletDto);
     List<WalletResponseDto> listWallets(Customer customer);
 }
