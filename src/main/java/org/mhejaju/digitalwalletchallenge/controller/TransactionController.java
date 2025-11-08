@@ -58,6 +58,21 @@ public class TransactionController {
                 .body(res);
     }
 
+    @PostMapping("/admin/withdraw")
+    public ResponseEntity<TransactionResponseDto> withdraw(
+            @RequestBody @Valid WithdrawDto withdrawDto,
+            @Pattern(regexp = Regex.TR_IDENTITY_NO_REGEX, message = ValidationMessages.TR_IDENTITY_NO_FORMAT_ERROR)
+            String customerTrIdentityNo
+
+    ) {
+
+        TransactionResponseDto res = transactionService.withdraw(withdrawDto, customerTrIdentityNo);
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(res);
+    }
+
     @GetMapping("/transactions")
     public ResponseEntity<WalletTransactionListResponseDto> getTransactions(
             @AuthenticationPrincipal Customer customer,

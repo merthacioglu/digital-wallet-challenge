@@ -7,8 +7,12 @@ import org.mhejaju.digitalwalletchallenge.entities.Customer;
 public interface TransactionService {
     TransactionResponseDto makeDeposit(DepositDto depositDto, Customer customer);
     TransactionResponseDto makeDeposit(DepositDto depositDto, String customerTrIdentityNo);
+
     TransactionResponseDto withdraw(WithdrawDto withdrawDto, Customer customer);
+    TransactionResponseDto withdraw(WithdrawDto withdrawDto, String customerTrIdentityNo);
+
     WalletTransactionListResponseDto getTransactions(Customer customer, String walletId);
     WalletTransactionListResponseDto getTransactions(String customerTrIdentityNo, String walletId);
+
     void changeTransactionStatus(Customer customer, ApproveOrDenyRequestDto changeRequest);
 }

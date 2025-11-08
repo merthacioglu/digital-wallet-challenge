@@ -115,6 +115,17 @@ public class TransactionServiceImpl implements TransactionService {
 
     }
 
+
+    @Override
+    @Transactional
+    public TransactionResponseDto withdraw(WithdrawDto withdrawDto, String customerTrIdentityNo) {
+        Optional<Customer> optionalCustomer = customerRepository.findByTrIdentityNo(customerTrIdentityNo);
+        Customer customer = optionalCustomer.orElseThrow(() ->
+                new CustomerNotFoundException(customerTrIdentityNo));
+
+        return withdraw(withdrawDto, customer);
+    }
+
     @Override
     public WalletTransactionListResponseDto getTransactions(String customerTrIdentityNo, String walletId) {
         Optional<Customer> optionalCustomer = customerRepository.findByTrIdentityNo(customerTrIdentityNo);
