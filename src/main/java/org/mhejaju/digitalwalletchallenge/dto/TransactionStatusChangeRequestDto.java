@@ -4,7 +4,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import org.mhejaju.digitalwalletchallenge.constants.ValidationMessages;
 
-public record ApproveOrDenyRequestDto(
+public record TransactionStatusChangeRequestDto(
         @NotNull(message = ValidationMessages.TRANSACTION_ID_REQUIRED)
         String transactionId,
         @NotNull(message = ValidationMessages.STATUS_REQUIRED)

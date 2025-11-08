@@ -165,7 +165,17 @@ public class TransactionServiceImpl implements TransactionService {
 
     @Transactional
     @Override
-    public void changeTransactionStatus(Customer customer, ApproveOrDenyRequestDto changeRequest) {
+    public void changeTransactionStatus(String customerTrIdentityNo, TransactionStatusChangeRequestDto changeRequest) {
+        Optional<Customer> optionalCustomer = customerRepository.findByTrIdentityNo(customerTrIdentityNo);
+        Customer customer = optionalCustomer.orElseThrow(() ->
+                new CustomerNotFoundException(customerTrIdentityNo));
+
+        changeTransactionStatus(customer, changeRequest);
+    }
+
+    @Transactional
+    @Override
+    public void changeTransactionStatus(Customer customer, TransactionStatusChangeRequestDto changeRequest) {
 
         Optional<Transaction> optionalTransaction = transactionRepository.findByTransactionId(changeRequest.transactionId());
         Transaction transaction = optionalTransaction.orElseThrow(() ->

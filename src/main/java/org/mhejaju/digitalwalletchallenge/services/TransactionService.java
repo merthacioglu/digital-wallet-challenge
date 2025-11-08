@@ -14,5 +14,6 @@ public interface TransactionService {
     WalletTransactionListResponseDto getTransactions(Customer customer, String walletId);
     WalletTransactionListResponseDto getTransactions(String customerTrIdentityNo, String walletId);
 
-    void changeTransactionStatus(Customer customer, ApproveOrDenyRequestDto changeRequest);
+    void changeTransactionStatus(Customer customer, TransactionStatusChangeRequestDto changeRequest);
+    void changeTransactionStatus(String customerTrIdentityNo, TransactionStatusChangeRequestDto changeRequest);
 }

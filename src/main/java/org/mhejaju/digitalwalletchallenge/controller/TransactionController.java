@@ -2,7 +2,6 @@ package org.mhejaju.digitalwalletchallenge.controller;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.RequiredArgsConstructor;
 import org.mhejaju.digitalwalletchallenge.constants.Regex;
@@ -111,7 +110,7 @@ public class TransactionController {
 
             @RequestBody
             @Valid
-            ApproveOrDenyRequestDto requestDto) {
+            TransactionStatusChangeRequestDto requestDto) {
 
         transactionService.changeTransactionStatus(customer, requestDto);
         ResponseDto res = new ResponseDto(
@@ -121,6 +120,23 @@ public class TransactionController {
         );
         return ResponseEntity.status(HttpStatus.OK)
                 .body(res);
+    }
+
+    @PostMapping("/admin/changeTransactionStatus")
+    public ResponseEntity<ResponseDto> changeTransactionStatus(
+            @RequestParam
+            @Pattern(regexp = Regex.TR_IDENTITY_NO_REGEX, message = ValidationMessages.TR_IDENTITY_NO_FORMAT_ERROR)
+            String customerTrIdentityNo,
+
+            @RequestBody
+            @Valid
+            TransactionStatusChangeRequestDto requestDto
+
+    ) {
+        transactionService.changeTransactionStatus(customerTrIdentityNo, requestDto);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(null);
     }
 
 
