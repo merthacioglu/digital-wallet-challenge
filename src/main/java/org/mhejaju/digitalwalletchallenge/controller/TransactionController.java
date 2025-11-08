@@ -3,7 +3,9 @@ package org.mhejaju.digitalwalletchallenge.controller;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import lombok.RequiredArgsConstructor;
+import org.mhejaju.digitalwalletchallenge.constants.Regex;
 import org.mhejaju.digitalwalletchallenge.constants.ValidationMessages;
 import org.mhejaju.digitalwalletchallenge.dto.*;
 import org.mhejaju.digitalwalletchallenge.entities.Customer;
@@ -33,6 +35,8 @@ public class TransactionController {
 
     @PostMapping("/admin/deposit")
     public ResponseEntity<TransactionResponseDto> makeDeposit(@RequestBody @Valid DepositDto depositDto,
+                                                              @RequestParam
+                                                              @Pattern(regexp = Regex.TR_IDENTITY_NO_REGEX, message = ValidationMessages.TR_IDENTITY_NO_FORMAT_ERROR)
                                                               String customerTrIdentityNo) {
 
         TransactionResponseDto res = transactionService.makeDeposit(depositDto, customerTrIdentityNo);
@@ -60,11 +64,26 @@ public class TransactionController {
 
             @RequestParam
             @NotEmpty(message = ValidationMessages.WALLET_ID_REQUIRED)
-            @NotNull(message = ValidationMessages.WALLET_ID_REQUIRED)
             String walletId
 
     ) {
         WalletTransactionListResponseDto res = transactionService.getTransactions(customer, walletId);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(res);
+    }
+
+    @GetMapping("/admin/transactions")
+    public ResponseEntity<WalletTransactionListResponseDto> getTransactions(
+            @RequestParam
+            @Pattern(regexp = Regex.TR_IDENTITY_NO_REGEX, message = ValidationMessages.TR_IDENTITY_NO_FORMAT_ERROR)
+            String customerTrIdentityNo,
+
+            @RequestParam
+            @NotEmpty(message = ValidationMessages.WALLET_ID_REQUIRED)
+            String walletId
+    ) {
+        WalletTransactionListResponseDto res = transactionService.getTransactions(customerTrIdentityNo, walletId);
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(res);

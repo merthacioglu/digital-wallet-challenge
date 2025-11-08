@@ -116,6 +116,15 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
     @Override
+    public WalletTransactionListResponseDto getTransactions(String customerTrIdentityNo, String walletId) {
+        Optional<Customer> optionalCustomer = customerRepository.findByTrIdentityNo(customerTrIdentityNo);
+        Customer customer = optionalCustomer.orElseThrow(() ->
+                new CustomerNotFoundException(customerTrIdentityNo));
+
+        return getTransactions(customer, walletId);
+    }
+
+    @Override
     public WalletTransactionListResponseDto getTransactions(Customer customer, String walletId) {
         Optional<Wallet> optionalWallet = walletRepository.findByWalletId(walletId);
         if (optionalWallet.isEmpty() || optionalWallet.get().getCustomer().getId() != customer.getId()) {
