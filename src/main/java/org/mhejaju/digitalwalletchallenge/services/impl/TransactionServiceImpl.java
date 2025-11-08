@@ -1,15 +1,14 @@
 package org.mhejaju.digitalwalletchallenge.services.impl;
 
 import lombok.RequiredArgsConstructor;
-import org.mhejaju.digitalwalletchallenge.dto.DepositDto;
-import org.mhejaju.digitalwalletchallenge.dto.TransactionResponseDto;
-import org.mhejaju.digitalwalletchallenge.dto.WalletTransactionListResponseDto;
-import org.mhejaju.digitalwalletchallenge.dto.WithdrawDto;
+import org.mhejaju.digitalwalletchallenge.dto.*;
 import org.mhejaju.digitalwalletchallenge.entities.Customer;
 import org.mhejaju.digitalwalletchallenge.entities.Transaction;
 import org.mhejaju.digitalwalletchallenge.entities.Wallet;
-import org.mhejaju.digitalwalletchallenge.entities.enums.Status;
+import org.mhejaju.digitalwalletchallenge.entities.enums.TransactionStatus;
+import org.mhejaju.digitalwalletchallenge.entities.enums.TransactionType;
 import org.mhejaju.digitalwalletchallenge.exceptions.InsufficientFundsException;
+import org.mhejaju.digitalwalletchallenge.exceptions.TransactionNotFoundException;
 import org.mhejaju.digitalwalletchallenge.exceptions.WalletNotAvailableException;
 import org.mhejaju.digitalwalletchallenge.exceptions.WalletNotFoundException;
 import org.mhejaju.digitalwalletchallenge.mapper.TransactionMapper;
@@ -21,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -32,18 +32,21 @@ public class TransactionServiceImpl implements TransactionService {
     @Override
     @Transactional
     public TransactionResponseDto makeDeposit(DepositDto depositDto, Customer customer) {
-        List<Wallet> wallets = walletRepository.findByCustomerId(customer.getId());
-        Wallet targetWallet = wallets.stream().filter(w -> w.getWalletId().equals(depositDto.walletId()))
-                .findAny().orElseThrow(() -> new WalletNotFoundException(customer.getTrIdentityNo(), depositDto.walletId()));
+        Optional<Wallet> optionalWallet = walletRepository.findByWalletId(depositDto.walletId());
+
+        if (optionalWallet.isEmpty() || optionalWallet.get().getCustomer().getId() != customer.getId()) {
+            throw new WalletNotFoundException(customer.getTrIdentityNo(), depositDto.walletId());
+        }
+        Wallet targetWallet = optionalWallet.get();
 
         targetWallet.setBalance(targetWallet.getBalance().add(depositDto.amount()));
         Transaction transaction = TransactionMapper.mapToTransaction(depositDto);
         transaction.setWallet(targetWallet);
         if (depositDto.amount().compareTo(BigDecimal.valueOf(1000.0)) < 0) {
             targetWallet.setUsableBalance(targetWallet.getUsableBalance().add(depositDto.amount()));
-            transaction.setStatus(Status.APPROVED);
+            transaction.setStatus(TransactionStatus.APPROVED);
         } else {
-            transaction.setStatus(Status.PENDING);
+            transaction.setStatus(TransactionStatus.PENDING);
         }
 
         transactionRepository.save(transaction);
@@ -60,9 +63,13 @@ public class TransactionServiceImpl implements TransactionService {
     @Override
     @Transactional
     public TransactionResponseDto withdraw(WithdrawDto withdrawDto, Customer customer) {
-        List<Wallet> wallets = walletRepository.findByCustomerId(customer.getId());
-        Wallet targetWallet = wallets.stream().filter(w -> w.getWalletId().equals(withdrawDto.walletId()))
-                .findAny().orElseThrow(() -> new WalletNotFoundException(customer.getTrIdentityNo(), withdrawDto.walletId()));
+
+        Optional<Wallet> optionalWallet = walletRepository.findByWalletId(withdrawDto.walletId());
+        if (optionalWallet.isEmpty() || optionalWallet.get().getCustomer().getId() != customer.getId()) {
+            throw new WalletNotFoundException(customer.getTrIdentityNo(), withdrawDto.walletId());
+        }
+
+        Wallet targetWallet = optionalWallet.get();
 
         if (!targetWallet.isActiveForWithdraw()) {
             throw new WalletNotAvailableException(targetWallet.getWalletId(), "Withdraw");
@@ -82,9 +89,9 @@ public class TransactionServiceImpl implements TransactionService {
 
         if (withdrawDto.amount().compareTo(BigDecimal.valueOf(1000.0)) < 0) {
             targetWallet.setBalance(targetWallet.getBalance().subtract(withdrawDto.amount()));
-            transaction.setStatus(Status.APPROVED);
+            transaction.setStatus(TransactionStatus.APPROVED);
         } else {
-            transaction.setStatus(Status.PENDING);
+            transaction.setStatus(TransactionStatus.PENDING);
         }
 
         transactionRepository.save(transaction);
@@ -101,9 +108,12 @@ public class TransactionServiceImpl implements TransactionService {
 
     @Override
     public WalletTransactionListResponseDto getTransactions(Customer customer, String walletId) {
-        List<Wallet> wallets = walletRepository.findByCustomerId(customer.getId());
-        Wallet targetWallet = wallets.stream().filter(w -> w.getWalletId().equals(walletId))
-                .findAny().orElseThrow(() -> new WalletNotFoundException(customer.getTrIdentityNo(), walletId));
+        Optional<Wallet> optionalWallet = walletRepository.findByWalletId(walletId);
+        if (optionalWallet.isEmpty() || optionalWallet.get().getCustomer().getId() != customer.getId()) {
+            throw new WalletNotFoundException(customer.getTrIdentityNo(), walletId);
+        }
+
+        Wallet targetWallet = optionalWallet.get();
 
         List<TransactionResponseDto> transactions = transactionRepository.findByWalletId(targetWallet.getId())
                 .stream().map(transaction -> TransactionResponseDto.builder()
@@ -124,6 +134,50 @@ public class TransactionServiceImpl implements TransactionService {
 
     }
 
+    @Transactional
+    @Override
+    public void changeTransactionStatus(Customer customer, ApproveOrDenyRequestDto changeRequest) {
+
+        Optional<Transaction> optionalTransaction = transactionRepository.findByTransactionId(changeRequest.transactionId());
+        Transaction transaction = optionalTransaction.orElseThrow(() ->
+                        new TransactionNotFoundException(customer.getTrIdentityNo(), changeRequest.transactionId()));
+
+        Wallet targetWallet = transaction.getWallet();
+
+        if (targetWallet.getCustomer().getId() != customer.getId()) {
+            throw new TransactionNotFoundException(customer.getTrIdentityNo(), changeRequest.transactionId());
+        }
+
+        if (transaction.getStatus().equals(TransactionStatus.APPROVED)) {
+            throw new RuntimeException("Transaction is already approved");
+        }
+
+        if (transaction.getStatus().equals(TransactionStatus.DENIED)) {
+            throw new RuntimeException("Transaction is already denied");
+        }
+
+        if (changeRequest.status().equals(TransactionStatus.APPROVED.name())) { // if an approve request comes
+            if (transaction.getType().equals(TransactionType.DEPOSIT)) {
+                // if a deposit is approved then the amount of transaction must be added to the usable balance of the wallet
+                targetWallet.setUsableBalance(targetWallet.getUsableBalance().add(transaction.getAmount()));
+            } else {
+                // if a withdraw is approved then the amount of transaction must be deducted from the balance of the wallet
+                targetWallet.setBalance(targetWallet.getBalance().subtract(transaction.getAmount()));
+            }
+        } else { // if a deny request comes
+            if (transaction.getType().equals(TransactionType.DEPOSIT)) {
+                // if a deposit is denied then the amount of transaction must be deducted from the balance of the wallet
+                targetWallet.setBalance(targetWallet.getBalance().subtract(transaction.getAmount()));
+            } else {
+                // if a withdraw is denied then the amount of transaction must be added to the usable balance of the wallet
+                targetWallet.setUsableBalance(targetWallet.getUsableBalance().add(transaction.getAmount()));
+            }
+        }
+
+        transaction.setStatus(TransactionStatus.valueOf(changeRequest.status()));
+        transactionRepository.save(transaction);
+        walletRepository.save(targetWallet);
+    }
 
 
 }

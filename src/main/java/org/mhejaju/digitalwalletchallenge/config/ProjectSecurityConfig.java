@@ -35,6 +35,7 @@ public class ProjectSecurityConfig {
                         .requestMatchers("/api/v1/wallets").hasAnyRole(Role.BASIC.name(), Role.ADMIN.name())
                         .requestMatchers("/api/v1/deposit").hasAnyRole(Role.BASIC.name(), Role.ADMIN.name())
                         .requestMatchers("/api/v1/transactions").hasAnyRole(Role.BASIC.name(), Role.ADMIN.name())
+                        .requestMatchers("/api/v1/changeTransactionStatus").hasAnyRole(Role.BASIC.name(), Role.ADMIN.name())
                         .requestMatchers("/api/v1/withdraw").hasAnyRole(Role.BASIC.name(), Role.ADMIN.name())
                         .requestMatchers("/api/v1/admin/**").hasRole(Role.ADMIN.name())
                         .anyRequest().authenticated())

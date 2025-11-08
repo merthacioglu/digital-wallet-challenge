@@ -4,10 +4,8 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
-import org.mhejaju.digitalwalletchallenge.dto.DepositDto;
-import org.mhejaju.digitalwalletchallenge.dto.TransactionResponseDto;
-import org.mhejaju.digitalwalletchallenge.dto.WalletTransactionListResponseDto;
-import org.mhejaju.digitalwalletchallenge.dto.WithdrawDto;
+import org.mhejaju.digitalwalletchallenge.constants.ValidationMessages;
+import org.mhejaju.digitalwalletchallenge.dto.*;
 import org.mhejaju.digitalwalletchallenge.entities.Customer;
 import org.mhejaju.digitalwalletchallenge.services.TransactionService;
 import org.springframework.http.HttpStatus;
@@ -37,7 +35,7 @@ public class TransactionController {
     public ResponseEntity<TransactionResponseDto> withdraw(
             @RequestBody @Valid WithdrawDto withdrawDto,
             @AuthenticationPrincipal Customer customer
-            ) {
+    ) {
 
         TransactionResponseDto res = transactionService.withdraw(withdrawDto, customer);
 
@@ -51,13 +49,33 @@ public class TransactionController {
             @AuthenticationPrincipal Customer customer,
 
             @RequestParam
-            @NotEmpty(message = "Wallet ID must be provided")
-            @NotNull(message = "Wallet ID must be provided") String walletId
+            @NotEmpty(message = ValidationMessages.WALLET_ID_REQUIRED)
+            @NotNull(message = ValidationMessages.WALLET_ID_REQUIRED)
+            String walletId
 
     ) {
         WalletTransactionListResponseDto res = transactionService.getTransactions(customer, walletId);
         return ResponseEntity
                 .status(HttpStatus.OK)
+                .body(res);
+    }
+
+    @PostMapping("/changeTransactionStatus")
+    public ResponseEntity<ResponseDto> changeTransactionStatus(
+            @AuthenticationPrincipal
+            Customer customer,
+
+            @RequestBody
+            @Valid
+            ApproveOrDenyRequestDto requestDto) {
+
+        transactionService.changeTransactionStatus(customer, requestDto);
+        ResponseDto res = new ResponseDto(
+                HttpStatus.OK.value(),
+                "Transaction has successfully been updated"
+
+        );
+        return ResponseEntity.status(HttpStatus.OK)
                 .body(res);
     }
 

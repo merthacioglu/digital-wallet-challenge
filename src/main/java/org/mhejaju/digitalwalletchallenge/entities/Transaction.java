@@ -3,7 +3,7 @@ package org.mhejaju.digitalwalletchallenge.entities;
 import jakarta.persistence.*;
 import lombok.Data;
 import org.mhejaju.digitalwalletchallenge.entities.enums.OppositePartyType;
-import org.mhejaju.digitalwalletchallenge.entities.enums.Status;
+import org.mhejaju.digitalwalletchallenge.entities.enums.TransactionStatus;
 import org.mhejaju.digitalwalletchallenge.entities.enums.TransactionType;
 
 import java.math.BigDecimal;
@@ -31,7 +31,7 @@ public class Transaction {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 10)
-    private Status status;
+    private TransactionStatus status;
 
     @Column(nullable = false)
     private String oppositeParty;

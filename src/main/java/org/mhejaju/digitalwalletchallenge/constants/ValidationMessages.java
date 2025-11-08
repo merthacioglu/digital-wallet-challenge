@@ -19,7 +19,10 @@ public class ValidationMessages {
     public static final String SOURCE_TYPE_REQUIRED = "Source type must be provided";
     public static final String SOURCE_TYPE_FORMAT_ERROR = "Source type must have value of either 'IBAN' or 'PAYMENT'";
     public static final String DESTINATION_TYPE_REQUIRED = "Destination type must be provided";
-    public static final String DESTINATION_TYPE_FORMAT_ERROR = "Destionation type must have value of either 'IBAN' or 'PAYMENT'";
+    public static final String DESTINATION_TYPE_FORMAT_ERROR = "Destination type must have value of either 'IBAN' or 'PAYMENT'";
+    public static final String STATUS_REQUIRED = "Transaction status must be provided";
+    public static final String STATUS_FORMAT_ERROR = "Transaction status must be either 'APPROVED' or 'DENIED'";
+    public static final String TRANSACTION_ID_REQUIRED = "Transaction ID must be provided";
     public static final String PASSWORD_FORMAT_ERROR = """
             Password must contain at least 8 characters and:
             At least 1 lowercase letter
