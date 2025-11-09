@@ -29,7 +29,7 @@ public record WalletDto(
                 allowableValues = {"USD", "TRY", "EUR"}
         )
         @NotNull(message = ValidationMessages.CURRENCY_REQUIRED)
-        @Pattern(regexp = "^(USD|TRY|EUR)$", message = ValidationMessages.INCORRECT_CURRENCY_ERROR) //TODO: find a generic solution against new currencies to be added
+        @Pattern(regexp = "^(USD|TRY|EUR)$", message = ValidationMessages.CURRENCY_INVALID) //TODO: find a generic solution against new currencies to be added
         String currency,
 
         @Schema(

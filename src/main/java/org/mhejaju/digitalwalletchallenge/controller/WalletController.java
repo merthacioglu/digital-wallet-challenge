@@ -199,7 +199,7 @@ public class WalletController {
     public ResponseEntity<ResponseDto> createWallet(
             @RequestBody @Valid WalletDto walletDto,
             @RequestParam
-            @Pattern(regexp = Regex.TR_IDENTITY_NO_REGEX, message = ValidationMessages.TR_IDENTITY_NO_FORMAT_ERROR)
+            @Pattern(regexp = Regex.TR_IDENTITY_NO_REGEX, message = ValidationMessages.TR_IDENTITY_NO_INVALID)
             String customerTrIdentityNo
     ) {
 
@@ -316,7 +316,7 @@ public class WalletController {
     @GetMapping("/admin/listWallets")
     public ResponseEntity<List<WalletResponseDto>> listWallets(
             @RequestParam
-            @Pattern(regexp = Regex.TR_IDENTITY_NO_REGEX, message = ValidationMessages.TR_IDENTITY_NO_FORMAT_ERROR)
+            @Pattern(regexp = Regex.TR_IDENTITY_NO_REGEX, message = ValidationMessages.TR_IDENTITY_NO_INVALID)
             String customerTrIdentityNo
     ) {
         List<WalletResponseDto> res = walletService.listWallets(customerTrIdentityNo);
