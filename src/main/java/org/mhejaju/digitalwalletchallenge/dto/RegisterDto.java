@@ -30,6 +30,11 @@ public record RegisterDto(
         @NotEmpty(message = ValidationMessages.EMAIL_REQUIRED)
         String email,
 
+        @Pattern(
+                regexp = Regex.PASSWORD_REGEX,
+                message = ValidationMessages.PASSWORD_INVALID
+        )
+        @NotEmpty(message = ValidationMessages.PASSWORD_REQUIRED)
         @Schema(description = "Customer's password", example = "SecurePass123!", required = true)
         String password
 ) {
