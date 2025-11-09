@@ -16,7 +16,7 @@ public class Wallet {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @Column(unique = true, nullable = false, updatable = false)
+    @Column(nullable = false)
     private String walletId;
 
     @Column(unique = true)

@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -22,11 +23,7 @@ public class ApplicationConfig {
     @Bean
     public UserDetailsService userDetailsService() {
         return userName -> customerRepository.findByEmail(userName)
-                .orElseThrow(() -> new ResourceNotFoundException(
-                        "Customer",
-                        "Email",
-                        userName
-                ));
+                .orElseThrow(() -> new BadCredentialsException("Email address or password is incorrect"));
     }
 
     @Bean

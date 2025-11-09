@@ -2,6 +2,8 @@ package org.mhejaju.digitalwalletchallenge.config;
 
 import lombok.RequiredArgsConstructor;
 import org.mhejaju.digitalwalletchallenge.entities.enums.Role;
+import org.mhejaju.digitalwalletchallenge.exceptions.CustomAccessDeniedHandler;
+import org.mhejaju.digitalwalletchallenge.exceptions.CustomAuthenticationEntryPoint;
 import org.mhejaju.digitalwalletchallenge.filter.JwtAuthenticationFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -29,7 +31,10 @@ public class ProjectSecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(request -> request.requestMatchers(
                                 "/api/v1/register",
-                                "/api/v1/login"
+                                "/api/v1/login",
+                                "/swagger-ui/**",
+                                "/swagger-resources/**",
+                                "/v3/api-docs/**"
 
                         ).permitAll()
                         .requestMatchers("/api/v1/addWallet").hasAnyRole(Role.BASIC.name(), Role.ADMIN.name())
@@ -41,6 +46,8 @@ public class ProjectSecurityConfig {
                         .requestMatchers("/api/v1/admin/**").hasRole(Role.ADMIN.name())
                         .anyRequest().authenticated())
                 .authenticationProvider(authenticationProvider)
+                .exceptionHandling(ehc -> ehc.accessDeniedHandler(new CustomAccessDeniedHandler()))
+                .httpBasic(hbc -> hbc.authenticationEntryPoint(new CustomAuthenticationEntryPoint()))
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();

@@ -49,7 +49,7 @@ public class AuthenticationService {
     public AuthenticationDto refreshToken(String refreshToken) {
 
         var user = customerRepository.findByEmail(jwtService.getEmailFromToken(refreshToken)).orElseThrow(() ->
-                new ResourceNotFoundException("JWT Token", "Refresh Token", refreshToken));
+                new  ResourceNotFoundException(String.format("Email couldn't be extracted from the JWT token %s", refreshToken)));
 
         var jwtToken = jwtService.generateToken(user);
         var newRefreshToken = jwtService.generateRefresh(new HashMap<>(), user);
