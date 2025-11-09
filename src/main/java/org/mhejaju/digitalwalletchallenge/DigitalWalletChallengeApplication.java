@@ -19,7 +19,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
                         email = "mhacioglu96@gmail.com"
                 ),
                 license = @License(
-                        name = "Apache 2.0"
+                        name = "MIT Licence"
                 )
         ),
         externalDocs = @ExternalDocumentation(
