@@ -35,7 +35,7 @@ A Spring Boot REST API for managing digital wallets with transaction support, au
     - H2 (Development)
     - PostgreSQL (Production)
 - **Documentation**: OpenAPI 3.0 (Swagger)
-- **Build Tool**: Maven
+- **Build Tool**: Gradle
 - **Java Version**: 17+
 
 ## Getting Started
