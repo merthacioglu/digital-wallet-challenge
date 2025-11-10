@@ -57,19 +57,18 @@ cd digital-wallet-challenge
 
 2. Build the project:
 ```
-mvn clean install
+./gradlew clean build
 ```
 
 3. Run the application
-
+- For development: (recommended to test the functionalities)
 ```
-mvn spring-boot:run -Dspring-boot.run.profiles=dev
-#development environment (recommended)
-
-mvn spring-boot:run -Dspring-boot.run.profiles=prod
-#production environment
+./gradlew bootRun --args='--spring.profiles.active=dev'
 ```
-
+- For production:
+```
+./gradlew bootRun --args='--spring.profiles.active=prod'
+```
 ## API Documentation
 
 After starting the application, Access the Swagger UI at: http://localhost:YOUR_PORT_VALUE/swagger-ui.html
