@@ -42,9 +42,10 @@ A Spring Boot REST API for managing digital wallets with transaction support, au
 
 ### Prerequisites
 
-- Java 17 or higher
-- Maven 3.6+
+- Java SE Development Kit 17+
+- Gradle 
 - PostgreSQL (for production)
+- Git (if version control is needed)
 
 ### Installation
 
