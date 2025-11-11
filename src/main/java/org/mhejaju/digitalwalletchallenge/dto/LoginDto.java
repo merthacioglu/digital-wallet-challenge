@@ -12,7 +12,7 @@ package org.mhejaju.digitalwalletchallenge.dto;
                 @NotEmpty(message = ValidationMessages.EMAIL_REQUIRED)
                 String email,
 
-                @Schema(description = "Customer's password", example = "SecurePass123!", required = true)
+                @Schema(description = "Customer's password", example = "SecurePassword123!", required = true)
                 @NotEmpty(message = ValidationMessages.PASSWORD_REQUIRED)
                 String password
         ) {

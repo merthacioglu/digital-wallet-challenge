@@ -10,22 +10,22 @@ import org.mhejaju.digitalwalletchallenge.constants.ValidationMessages;
 
 @Schema(description = "Request to register a new customer account")
 public record RegisterDto(
-        @Schema(description = "Customer's first name", example = "John", required = true, minLength = 2, maxLength = 50)
+        @Schema(description = "Customer's first name", example = "Mert", required = true, minLength = 2, maxLength = 50)
         @Size(min = 2, max = 50, message = ValidationMessages.NAME_SIZE_MISMATCH)
         @NotEmpty(message = ValidationMessages.NAME_REQUIRED)
         String name,
 
-        @Schema(description = "Customer's last name", example = "Doe", required = true, minLength = 2, maxLength = 50)
+        @Schema(description = "Customer's last name", example = "Hejaju", required = true, minLength = 2, maxLength = 50)
         @Size(min = 2, max = 50, message = ValidationMessages.SURNAME_SIZE_MISMATCH)
         @NotEmpty(message = ValidationMessages.SURNAME_REQUIRED)
         String surname,
 
-        @Schema(description = "Turkish Identity Number (11 digits)", example = "10195827811", required = true, pattern = "^[0-9]{11}$")
+        @Schema(description = "Turkish Identity Number (11 digits)", example = "12345678910", required = true, pattern = "^[0-9]{11}$")
         @Pattern(regexp = Regex.TR_IDENTITY_NO_REGEX, message = ValidationMessages.TR_IDENTITY_NO_INVALID)
         @NotEmpty(message = ValidationMessages.TR_IDENTITY_NO_REQUIRED)
         String trIdentityNo,
 
-        @Schema(description = "Customer's email address", example = "john.doe@example.com", required = true, format = "email")
+        @Schema(description = "Customer's email address", example = "mhejaju@company.com", required = true, format = "email")
         @Email(message = ValidationMessages.EMAIL_INVALID)
         @NotEmpty(message = ValidationMessages.EMAIL_REQUIRED)
         String email,
@@ -35,7 +35,7 @@ public record RegisterDto(
                 message = ValidationMessages.PASSWORD_INVALID
         )
         @NotEmpty(message = ValidationMessages.PASSWORD_REQUIRED)
-        @Schema(description = "Customer's password", example = "SecurePass123!", required = true)
+        @Schema(description = "Customer's password", example = "SecureP4ssw0rd!", required = true)
         String password
 ) {
 }

@@ -23,7 +23,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
                 )
         ),
         externalDocs = @ExternalDocumentation(
-                description = "Digital Wallet Challenge REST API Documentation",
+                description = "GitHub Repository",
                 url = "https://github.com/merthacioglu/digital-wallet-challenge"
         )
 )

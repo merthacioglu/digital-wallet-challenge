@@ -76,7 +76,7 @@ public class AuthController {
     public ResponseEntity<AuthenticationDto> register(@RequestBody @Valid RegisterDto registerDto) {
         AuthenticationDto res = authenticationService.register(registerDto);
         return ResponseEntity
-                .status(HttpStatus.OK)
+                .status(HttpStatus.CREATED)
                 .body(res);
     }
 
